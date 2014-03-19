@@ -1,0 +1,136 @@
+;; slime prompt
+
+TEST-PACKAGE> (defvar *test* nil)
+*TEST*
+TEST-PACKAGE> (setq *test* '(this is a test))
+(THIS IS A TEST)
+
+
+;; sbcl default prompt
+
+* (defvar *test* nil)
+
+*TEST*
+* (setq *test* '(my expression))
+
+(MY EXPRESSION)
+
+
+;; emacs ielm prompt
+
+ELISP> '(emacs lisp)
+(emacs lisp)
+
+
+;; ecl prompt
+
+> (in-package 'cl)
+#<"COMMON-LISP" package>
+COMMON-LISP> (in-package 'system)
+#<"SYSTEM" package>
+SYSTEM> 
+SYSTEM> :key
+:KEY
+
+;; ccl prompt
+
+? (rebuild-ccl :full t)
+? (quit)
+
+;; abcl prompt
+
+CL-USER(1): (format t "Hello, world!")
+Hello, world!
+NIL
+
+
+;; long slime example
+
+; SLIME 2012-08-18
+CL-USER> (defun safe-trace (sym package)
+  (handler-bind ((simple-error
+                   #'(lambda (c)
+                       (format t "Skipping Symbol ~A (probably a macro)~%" sym)
+                       (invoke-restart 'skip-symbol))))
+    (if (and (fboundp sym)   ;; an inline comment
+             (functionp (symbol-function sym))
+             (equal (package-name (symbol-package sym))
+                    (symbol-name package)))
+        (progn
+          (format t "Tracing symbol ~A~%" sym)
+          (restart-case
+              (eval `(trace ,(intern (symbol-name sym) package)))
+            (skip-symbol () nil)))
+        (format t "Not tracing Symbol ~A~%" sym))))
+
+; in: DEFUN SAFE-TRACE
+;     (HANDLER-BIND ((SIMPLE-ERROR
+;                     #'(LAMBDA (C)
+;                         (FORMAT T "Skipping Symbol ~A (probably a macro)~%" SYM)
+;                         (INVOKE-RESTART 'SKIP-SYMBOL))))
+;       (IF (AND (FBOUNDP SYM) (FUNCTIONP (SYMBOL-FUNCTION SYM))
+;                (EQUAL (PACKAGE-NAME #) (SYMBOL-NAME PACKAGE)))
+;           (PROGN
+;            (FORMAT T "Tracing symbol ~A~%" SYM)
+;            (RESTART-CASE (EVAL `#)
+;              (SKIP-SYMBOL NIL NIL)))
+;           (FORMAT T "Not tracing Symbol ~A~%" SYM)))
+; --> SB-IMPL::%HANDLER-BIND SB-INT:DX-FLET 
+; ==>
+;   (FLET ((#:LAMBDA0 (C)
+;            (FORMAT T "Skipping Symbol ~A (probably a macro)~%" SYM)
+;            (INVOKE-RESTART 'SKIP-SYMBOL)))
+;     (DECLARE (SB-INT:TRULY-DYNAMIC-EXTENT (FUNCTION #:LAMBDA0)))
+;     (LET ((SB-KERNEL:*HANDLER-CLUSTERS* (CONS # SB-KERNEL:*HANDLER-CLUSTERS*)))
+;       (DECLARE (SB-INT:TRULY-DYNAMIC-EXTENT SB-KERNEL:*HANDLER-CLUSTERS*))
+;       (PROGN
+;        (PROGN
+;         (IF #
+;             #
+;             #)))))
+; 
+; caught STYLE-WARNING:
+;   The variable C is defined but never used.
+; 
+; compilation unit finished
+;   caught 1 STYLE-WARNING condition
+SAFE-TRACE
+
+CLDOMAIN-TEST> (let ((*current-package* *package*)) (SCOPE-SYMBOLS-IN-TEXT "example text LIST CAR ignore MORE text." '(CAR)))
+  0: (SPHINXCONTRIB.CLDOMAIN::FIND-SYMBOL* "LIST")
+  0: SPHINXCONTRIB.CLDOMAIN::FIND-SYMBOL* returned LIST :INHERITED
+  0: (SPHINXCONTRIB.CLDOMAIN::ENCODE-XREF LIST)
+  0: SPHINXCONTRIB.CLDOMAIN::ENCODE-XREF returned
+       ":cl:symbol:`~COMMON-LISP:LIST`"
+  0: (SPHINXCONTRIB.CLDOMAIN::FIND-SYMBOL* "CAR")
+  0: SPHINXCONTRIB.CLDOMAIN::FIND-SYMBOL* returned CAR :INHERITED
+  0: (SPHINXCONTRIB.CLDOMAIN::FIND-SYMBOL* "MORE")
+  0: SPHINXCONTRIB.CLDOMAIN::FIND-SYMBOL* returned NIL NIL
+  0: (SPHINXCONTRIB.CLDOMAIN::FIND-SYMBOL* "MORE")
+  0: SPHINXCONTRIB.CLDOMAIN::FIND-SYMBOL* returned NIL NIL
+"example text :cl:symbol:`~COMMON-LISP:LIST` CAR ignore MORE text."
+CLDOMAIN-TEST> (let ((*current-package* *package*)) (SCOPE-SYMBOLS-IN-TEXT "example text LIST CAR ignore MORE text." '(CAR)))
+  0: (SPHINXCONTRIB.CLDOMAIN::FIND-SYMBOL* "LIST")
+  0: SPHINXCONTRIB.CLDOMAIN::FIND-SYMBOL* returned LIST :INHERITED
+  0: (SPHINXCONTRIB.CLDOMAIN::ENCODE-XREF LIST)
+  0: SPHINXCONTRIB.CLDOMAIN::ENCODE-XREF returned
+       ":cl:symbol:`~COMMON-LISP:LIST`"
+  0: (SPHINXCONTRIB.CLDOMAIN::FIND-SYMBOL* "CAR")
+  0: SPHINXCONTRIB.CLDOMAIN::FIND-SYMBOL* returned CAR :INHERITED
+  0: (SPHINXCONTRIB.CLDOMAIN::FIND-SYMBOL* "MORE")
+  0: SPHINXCONTRIB.CLDOMAIN::FIND-SYMBOL* returned NIL NIL
+  0: (SPHINXCONTRIB.CLDOMAIN::FIND-SYMBOL* "MORE")
+  0: SPHINXCONTRIB.CLDOMAIN::FIND-SYMBOL* returned NIL NIL
+"example text :cl:symbol:`~COMMON-LISP:LIST` CAR ignore MORE text."
+
+CLDOMAIN-TEST> (defmacro multi-run (times &body algo-call)
+   `(loop for ,(gensym) below ,times collect (progn ,@algo-call)))
+MULIT-RUN
+
+CLDOMAIN-TEST> 4
+4
+
+;; a delibratly broken sexp
+CLDOMAIN-TEST> (defun nofun (no fun at all)
+   '(crash and burn)
+
