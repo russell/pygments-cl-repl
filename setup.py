@@ -13,7 +13,7 @@ description = (open(desc_file).read()
                + changelog_header
                + open(changelog_file).read())
 
-version = '0.1'
+version = '0.2'
 
 setup(
     name='pygments-cl-repl',

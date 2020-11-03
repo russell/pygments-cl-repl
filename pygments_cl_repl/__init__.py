@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
-from StringIO import StringIO
+from io import StringIO
 from string import whitespace
 
 from pygments.lexer import Lexer, do_insertions
@@ -97,7 +97,7 @@ class CommonLispREPLLexer(Lexer):
 
         while True:
             try:
-                match = iterator.next()
+                match = next(iterator)
                 line = match.group()
                 start = match.start()
             except StopIteration:
@@ -109,7 +109,7 @@ class CommonLispREPLLexer(Lexer):
                     line = text[match.end():]
                     match = None
                 else:
-                    raise StopIteration()
+                    return
             m = re.match(r'^((?:[^\s*?>:]*[*?>:]) )(.*\n?)', line)
 
             if m:
@@ -134,7 +134,7 @@ class CommonLispREPLLexer(Lexer):
                     reader = sexp_reader()
                     while reader.read(string_stream):
                         try:
-                            match = iterator.next()
+                            match = next(iterator)
                             string_stream = StringIO(match.group())
                         except StopIteration:
                             break
