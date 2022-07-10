@@ -20,8 +20,8 @@ python_distribution(
     ],
     provides=python_artifact(
         name="pygments-cl-repl",
-        version="0.2",
-            description="Pygments lexer for Common Lisp REPL",
+        version="0.2.1",
+        description="Pygments lexer for Common Lisp REPL",
 
         requires_python = ">=3.7",
         license = "GPLv3+",

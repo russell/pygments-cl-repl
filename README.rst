@@ -14,7 +14,7 @@ installed, Pygments will pick it up automatically.
 
 You can then use this lexer with Pygments::
 
-    $ pygmentize -l common-lisp-repl /etc/openssl/openssl.cnf
+    $ pygmentize -l common-lisp-repl pygments_cl_repl/test.common-lisp-repl
 
 In Sphinx_ documents the lexer is selected with the ``highlight``
 directive::
@@ -38,4 +38,3 @@ To verify the installation run::
     $ pygmentize -L lexer | grep -i common-lisp-repl
     * common-lisp-repl:
         Common Lisp REPL (filenames *.common-lisp-repl)
-
