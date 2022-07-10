@@ -44,7 +44,6 @@ python_distribution(
         ],
 
         urls = {
-            "documentation": "https://russell.github.io/pygments-cl-repl/",
             "source": "https://github.com/russell/pygments-cl-repl",
             "tracker": "https://github.com/russell/pygments-cl-repl/issues",
         },
