@@ -1,4 +1,4 @@
-Release 0.2.1 UNRELEASED
+Release 0.2.1 2022-07-10
 ------------------------
 
 * Update build tooling
