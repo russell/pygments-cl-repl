@@ -29,41 +29,46 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from os import path
 import difflib
 import unittest
+from os import path
 
 from pygments.token import Error
+
 from pygments_cl_repl import CommonLispREPLLexer
 
 DIR = path.dirname(__file__)
 
+
 class CLREPLTestCase(unittest.TestCase):
     def test_with_example_file(self):
-        filename = path.join(DIR, 'test.common-lisp-repl')
+        filename = path.join(DIR, "test.common-lisp-repl")
         lexer = CommonLispREPLLexer()
-        fp = open(filename, 'rb')
+        fp = open(filename, "rb")
         try:
             text = fp.read()
         finally:
             fp.close()
-        text = text.replace(b'\r\n', b'\n')
-        text = text.strip(b'\n') + b'\n'
+        text = text.replace(b"\r\n", b"\n")
+        text = text.strip(b"\n") + b"\n"
         try:
-            text = text.decode('utf-8')
-            if text.startswith(u'\ufeff'):
-                text = text[len(u'\ufeff'):]
+            text = text.decode("utf-8")
+            if text.startswith("\ufeff"):
+                text = text[len("\ufeff") :]
         except UnicodeError:
-            text = text.decode('latin1')
+            text = text.decode("latin1")
         ntext = []
         tokens = []
         for type, val in lexer.get_tokens(text):
             ntext.append(val)
             self.assertNotEqual(
-                type, Error,
-                'error %r at position %d' % (val, len(u''.join(ntext))))
+                type, Error, "error %r at position %d" % (val, len("".join(ntext)))
+            )
             tokens.append((type, val))
         self.assertEqual(
-            u''.join(ntext), text,
-            '\n'.join(difflib.unified_diff(u''.join(ntext).splitlines(),
-                                           text.splitlines())))
+            "".join(ntext),
+            text,
+            "\n".join(
+                difflib.unified_diff("".join(ntext).splitlines(), text.splitlines())
+            ),
+        )

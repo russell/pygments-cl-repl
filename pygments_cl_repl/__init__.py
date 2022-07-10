@@ -7,25 +7,25 @@ from pygments.lexer import Lexer, do_insertions
 from pygments.lexers.functional import CommonLispLexer
 from pygments.token import Generic
 
-atom_end = set('()"\'') | set(whitespace)
-line_re = re.compile('.*?\n')
+atom_end = set("()\"'") | set(whitespace)
+line_re = re.compile(".*?\n")
 
 
-class sexp_reader():
-    """
-    This is a dumb parser that will parse one sexp.
+class sexp_reader:
+    """This is a dumb parser that will parse one sexp.
 
     based on Paul Bonser's example parser
     https://gist.github.com/pib/240957/
     """
+
     def __init__(self):
         self.stack = [[]]
         self.sexp_string = StringIO()
         self.rest_string = StringIO()
 
     def read(self, stream):
-        """
-        Will parse the stream until a complete sexp has been read.
+        """Will parse the stream until a complete sexp has been read.
+
         Returns True until state is complete.
         """
         stack = self.stack
@@ -46,12 +46,12 @@ class sexp_reader():
                     stack[-1].append(atom)
                     reading = type(stack[-1])
             if reading == list:
-                if c == '(':
+                if c == "(":
                     stack.append([])
-                elif c == ')':
+                elif c == ")":
                     stack[-2].append(stack.pop())
                 elif c == '"':
-                    stack.append('')
+                    stack.append("")
                 elif c == "'":
                     continue
                 elif c in whitespace:
@@ -62,36 +62,35 @@ class sexp_reader():
                 if c == '"':
                     stack.pop()
                 # escaped char coming up, so read ahead
-                elif c == '\\':
+                elif c == "\\":
                     self.sexp_string.write(stream.read(1))
 
     def rest(self):
-        """Return the unparsed remainder of the stream as a string"""
+        """Return the unparsed remainder of the stream as a string."""
         return self.rest_string.read()
 
     def sexp(self):
-        """Return the parsed sexp as a string"""
+        """Return the parsed sexp as a string."""
         self.sexp_string.seek(0)
         return self.sexp_string.read()
 
 
 class CommonLispREPLLexer(Lexer):
-    """
-    Lexer for lisp REPL sessions that works with different command prompts
+    """Lexer for lisp REPL sessions that works with different command prompts.
 
     Currently supports: ECL, SBCL, CCL, SLIME and IELM
     """
 
-    name = 'Common Lisp REPL'
-    aliases = ['common-lisp-repl']
-    filenames = ['*.common-lisp-repl']
-    mimetypes = ['text/x-common-lisp-repl']
+    name = "Common Lisp REPL"
+    aliases = ["common-lisp-repl"]
+    filenames = ["*.common-lisp-repl"]
+    mimetypes = ["text/x-common-lisp-repl"]
 
     def get_tokens_unprocessed(self, text):
         cl_lexer = CommonLispLexer(**self.options)
 
         pos = 0
-        curcode = ''
+        curcode = ""
         insertions = []
         iterator = line_re.finditer(text)
 
@@ -106,11 +105,11 @@ class CommonLispREPLLexer(Lexer):
                 # output is processed
                 if match and match.end() < len(text):
                     start = match.end()
-                    line = text[match.end():]
+                    line = text[match.end() :]
                     match = None
                 else:
                     return
-            m = re.match(r'^((?:[^\s*?>:]*[*?>:]) )(.*\n?)', line)
+            m = re.match(r"^((?:[^\s*?>:]*[*?>:]) )(.*\n?)", line)
 
             if m:
                 line = ""
@@ -120,11 +119,10 @@ class CommonLispREPLLexer(Lexer):
                 if not insertions:
                     pos = start
 
-                insertions.append((len(curcode),
-                                   [(0, Generic.Prompt, m.group(1))]))
+                insertions.append((len(curcode), [(0, Generic.Prompt, m.group(1))]))
 
                 # skip parser when line is empty
-                if re.match(r'^\s*$', m.group(2)):
+                if re.match(r"^\s*$", m.group(2)):
                     line = m.group(2)
                 else:
                     # read out the whole sexp after the prompt, if it's a
@@ -145,8 +143,8 @@ class CommonLispREPLLexer(Lexer):
                 if curcode:
                     toks = cl_lexer.get_tokens_unprocessed(curcode)
                 for i, t, v in do_insertions(insertions, toks):
-                    yield pos+i, t, v
+                    yield pos + i, t, v
             if line:
                 yield start, Generic.Output, line
             insertions = []
-            curcode = ''
+            curcode = ""
