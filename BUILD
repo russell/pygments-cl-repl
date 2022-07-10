@@ -18,6 +18,7 @@ python_distribution(
         ":lib",
         ":docs",
     ],
+    long_description_path = "README.rst",
     provides=python_artifact(
         name="pygments-cl-repl",
         version="0.2.1",
@@ -26,6 +27,7 @@ python_distribution(
         requires_python = ">=3.7",
         license = "GPLv3+",
         readme = { "file": "README.rst", "content_type": "text/x-rst" },
+        long_description_content_type = "text/x-rst",
         authors = [
             { "name": "Russell Sim", "email": "russell.sim@gmail.com" }
         ],
