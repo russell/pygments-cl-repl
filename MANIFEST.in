@@ -1,4 +1,0 @@
-include README.*
-include LICENSE
-include CHANGELOG.*
-recursive-include pygments_cl_repl *.common-lisp-repl

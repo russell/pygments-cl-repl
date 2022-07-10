@@ -34,11 +34,9 @@ import difflib
 import unittest
 
 from pygments.token import Error
-from pygments.util import b
 from pygments_cl_repl import CommonLispREPLLexer
 
 DIR = path.dirname(__file__)
-
 
 class CLREPLTestCase(unittest.TestCase):
     def test_with_example_file(self):
@@ -49,8 +47,8 @@ class CLREPLTestCase(unittest.TestCase):
             text = fp.read()
         finally:
             fp.close()
-        text = text.replace(b('\r\n'), b('\n'))
-        text = text.strip(b('\n')) + b('\n')
+        text = text.replace(b'\r\n', b'\n')
+        text = text.strip(b'\n') + b'\n'
         try:
             text = text.decode('utf-8')
             if text.startswith(u'\ufeff'):
@@ -69,13 +67,3 @@ class CLREPLTestCase(unittest.TestCase):
             u''.join(ntext), text,
             '\n'.join(difflib.unified_diff(u''.join(ntext).splitlines(),
                                            text.splitlines())))
-
-
-def suite():
-    loader = unittest.TestLoader()
-    suite = unittest.TestSuite()
-    suite.addTest(loader.loadTestsFromTestCase(CLREPLTestCase))
-    return suite
-
-if __name__ == '__main__':
-    unittest.TextTestRunner(verbosity=2).run(suite())

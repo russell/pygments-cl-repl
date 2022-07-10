@@ -1,2 +1,5 @@
 /pygments_cl_repl.egg-info/
 __pycache__/
+/.pants.d/
+/.pids/
+/dist/
