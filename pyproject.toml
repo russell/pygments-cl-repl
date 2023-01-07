@@ -30,8 +30,9 @@ dependencies = [
 ]
 
 [project.urls]
-source = "https://git.sr.ht/~rsl/pygments-cl-repl"
-tracker = "https://todo.sr.ht/~rsl/sphinxcontrib-cldomain"
+"Homepage" = "https://git.sr.ht/~rsl/pygments-cl-repl"
+"Bug Reports" = "https://todo.sr.ht/~rsl/sphinxcontrib-cldomain"
+"Source" = "https://git.sr.ht/~rsl/pygments-cl-repl"
 
 [project.entry-points."pygments.lexers"]
 common-lisp-repl = "pygments_cl_repl:CommonLispREPLLexer"
